@@ -25,9 +25,9 @@ describe('template spec', () => {
       cy.readPasswordsFromFile().then((passwords) => {
         passwords.forEach((password) => {
           cy.get('#dataPass-1').type(password);
-          cy.get(':nth-child(3) > label > .ng-valid').click();
-          //cy.get('form.ng-valid > .btn'). click();
-          cy.contains('No data provided');
+          //cy.get(':nth-child(3) > label > .ng-valid').click();
+          cy.get('form.ng-valid > .btn'). click();
+          cy.contains('Incorrect backup password');
           cy.get('#dataPass-1').clear();
         });
       });
