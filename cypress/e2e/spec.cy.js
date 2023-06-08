@@ -4,14 +4,10 @@ Cypress.Commands.add('readPasswordsFromFile', () => {
   });
 });
 
-Cypress.Commands.add('readAedFile', () => {
-  return cy.readFile('wallet.aes.json').then((content) => {
-    return content;
-  });
+Cypress.Commands.add('readFileContents', (filePath) => {
+  return cy.readFile(filePath);
+
 });
-
-
-
 
 describe('template spec', () => {
   beforeEach(() => {
@@ -23,14 +19,17 @@ describe('template spec', () => {
   });
 
   it('tries passwords from file', () => {
-    cy.readPasswordsFromFile().then((passwords) => {
-      passwords.forEach((password) => {
-        cy.get('#dataBackUp-1').type("123")
-        cy.get('#dataPass-1').type(password);
-        cy.get(':nth-child(3) > label > .ng-valid').click();
-        //cy.get('form.ng-valid > .btn').click();
-        cy.contains('No data provided');
-        cy.get('#dataPass-1').clear();
+    cy.readFileContents('wallet.aes.json').then((walletContent) => {
+      console.log(walletContent)
+      cy.get('#dataBackUp-1').type(JSON.stringify(walletContent),{parseSpecialCharSequences: false});
+      cy.readPasswordsFromFile().then((passwords) => {
+        passwords.forEach((password) => {
+          cy.get('#dataPass-1').type(password);
+          cy.get(':nth-child(3) > label > .ng-valid').click();
+          //cy.get('form.ng-valid > .btn'). click();
+          cy.contains('No data provided');
+          cy.get('#dataPass-1').clear();
+        });
       });
     });
   });
